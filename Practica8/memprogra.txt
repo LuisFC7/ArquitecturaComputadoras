@@ -1,0 +1,95 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_arith.ALL;
+use IEEE.STD_LOGIC_unsigned.ALL;
+
+entity dataprogram is
+    generic ( m : integer := 10;
+              n : integer := 25);
+    Port ( PC : in STD_LOGIC_VECTOR (m-1 downto 0);
+           ints : out STD_LOGIC_VECTOR (n-1 downto 0));
+end dataprogram;
+
+architecture Behavioral of dataprogram is
+    --Instrucciones tipo R
+    constant TR : STD_LOGIC_VECTOR(4 downto 0):="00000";
+    --Instrucciones de Carga y Almacenamiento
+    constant LI:STD_LOGIC_VECTOR(4 downto 0):="00001";
+    constant LWI:STD_LOGIC_VECTOR(4 downto 0):="00010";
+    constant LW:STD_LOGIC_VECTOR(4 downto 0):="10111";
+    constant SWI:STD_LOGIC_VECTOR(4 downto 0):="00011";
+    constant SW:STD_LOGIC_VECTOR(4 downto 0):="00100";
+    
+    --Instrucciones Aritmeticas
+    constant ADD:STD_LOGIC_VECTOR(3 downto 0):="0000";--R
+    constant SUB:STD_LOGIC_VECTOR(3 downto 0):="0001";--R
+    constant ADDI:STD_LOGIC_VECTOR(4 downto 0):="00101";
+    constant SUBI:STD_LOGIC_VECTOR(4 downto 0):="00110";
+
+    --Instrucciones Lógicas
+    constant OPAND:STD_LOGIC_VECTOR(3 downto 0):="0010";
+    constant OPOR:STD_LOGIC_VECTOR(3 downto 0):="0011";
+    constant OPXOR:STD_LOGIC_VECTOR(3 downto 0):="0100";
+    constant OPNAND:STD_LOGIC_VECTOR(3 downto 0):="0101";
+    constant OPNOR:STD_LOGIC_VECTOR(3 downto 0):="0110";
+    constant OPXNOR:STD_LOGIC_VECTOR(3 downto 0):="0111";
+    constant OPNOT:STD_LOGIC_VECTOR(3 downto 0):="1000";
+    constant ANDI:STD_LOGIC_VECTOR(4 downto 0):="00111";
+    constant ORI:STD_LOGIC_VECTOR(4 downto 0):="01000";
+    constant XORI:STD_LOGIC_VECTOR(4 downto 0):="01001";
+    constant NANDI:STD_LOGIC_VECTOR(4 downto 0):="01010";
+    constant NORI:STD_LOGIC_VECTOR(4 downto 0):="01011";
+    constant XNORI:STD_LOGIC_VECTOR(4 downto 0):="01100";
+    
+    --Instrucciones de Corrimiento
+    constant OPSLL:STD_LOGIC_VECTOR(3 downto 0):="1001";
+    constant OPSRL:STD_LOGIC_VECTOR(3 downto 0):="1010";
+    --constant OPR:STD_LOGIC_VECTOR(4 downto 0):="00000";
+    
+    --Instrucciones de Saltos Condicionales e Incondicionales
+    constant BEQI:STD_LOGIC_VECTOR(4 downto 0):="01101";
+    constant BNEI:STD_LOGIC_VECTOR(4 downto 0):="01110";
+    constant BLTI:STD_LOGIC_VECTOR(4 downto 0):="01111";
+    constant BLETI:STD_LOGIC_VECTOR(4 downto 0):="10000";
+    constant BGTI:STD_LOGIC_VECTOR(4 downto 0):="10001";
+    constant BGETI:STD_LOGIC_VECTOR(4 downto 0):="10010";
+    constant B:STD_LOGIC_VECTOR(4 downto 0):="10011";
+    
+    --Instrucciones de Manejo de Subrutinas
+    constant CALL:STD_LOGIC_VECTOR(4 downto 0):="10100";
+    constant RET:STD_LOGIC_VECTOR(4 downto 0):="10101";
+    
+    --Otras Instrucciones
+    constant NOP:STD_LOGIC_VECTOR(4 downto 0):="10110";
+    constant SU:STD_LOGIC_VECTOR(3 downto 0):="0000"; -- Sin usar 4 bits
+    
+    --Registros
+    constant R0 : STD_LOGIC_VECTOR (3 downto 0) := "0000";
+    constant R1 : STD_LOGIC_VECTOR (3 downto 0) := "0001";
+    constant R2 : STD_LOGIC_VECTOR (3 downto 0) := "0010";
+    constant R3 : STD_LOGIC_VECTOR (3 downto 0) := "0011";
+    constant R4 : STD_LOGIC_VECTOR (3 downto 0) := "0100";
+    constant R5 : STD_LOGIC_VECTOR (3 downto 0) := "0101";
+    constant R6 : STD_LOGIC_VECTOR (3 downto 0) := "0110";
+    constant R7 : STD_LOGIC_VECTOR (3 downto 0) := "0111";
+    constant R8 : STD_LOGIC_VECTOR (3 downto 0) := "1000";
+    
+    type mem is array (0 to (2**m)-1) of STD_LOGIC_VECTOR(n-1 downto 0);
+    constant aux : mem := (--aqui nace la memoria
+        LI & R0 & x"0000",--0                 
+        LI & R1 & x"0001",--1                 
+        LI & R2 & x"0000",--2                  
+        LI & R3 & x"000c",--3                
+        TR & R4 & R0 & R1 & SU & ADD,--4   
+        SWI & R4 & x"0048",--5                 
+        ADDI & R0 & R1 & x"000",--6            
+        ADDI & R1 & R4 & x"000",--7           
+        ADDI & R2 & R2 & x"001",--8          
+        BNEI & R3 & R2 & x"ffb",--9   CONDICION SALTO A LINEA 4  "111111111011"   PC=9+(-5)=4   
+        NOP & SU & SU & SU & SU & SU,--10       
+        B & SU & x"000a",--11   SALTO A FIN        
+        others => (others => '0')
+    );
+begin
+    ints <= aux(conv_integer(PC));
+end Behavioral;
