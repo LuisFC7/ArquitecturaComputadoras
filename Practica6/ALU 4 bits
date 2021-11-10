@@ -1,0 +1,53 @@
+library IEEE;
+library work;
+use IEEE.STD_LOGIC_1164.ALL;
+use work.paqueteALU.all;
+
+entity ALU4bits is
+    Port ( a : in STD_LOGIC_VECTOR (3 downto 0);
+           b : in STD_LOGIC_VECTOR (3 downto 0);
+           Aluop : in STD_LOGIC_VECTOR (3 downto 0);
+           Res : inout STD_LOGIC_VECTOR (3 downto 0);
+           bandera : out STD_LOGIC_VECTOR(3 downto 0);
+           Cout : out STD_LOGIC
+        );
+end ALU4bits;
+
+architecture Behavioral of ALU4bits is
+signal C : std_logic_vector(4 downto 0); --vector de acarreos
+begin
+C(0)<=Aluop(2);
+    
+ciclo: FOR I IN 0 TO 3 GENERATE
+    ALUcompleta: ALU1bit port map
+        (
+            A => a(i),
+            B => b(i),
+            CIN => C(i),
+            SELA => Aluop(3),
+            SELB => Aluop(2),
+            op => Aluop(1 downto 0),
+            result => Res(i),
+            cout => C(i+1)
+        );
+end GENERATE;
+Cout<=C(4);
+
+--orden OV / N / Z / C
+bandera(0)<=c(4);--acarreo
+bandera(2)<=Res(3);--signo
+bandera(3)<= (C(4) xor C(3));--ov
+
+--para bandera zero
+process(Res, C)
+variable z: std_logic;
+begin
+z:='0';
+banderazero: for k in 3 downto 0 loop
+    z:= z or Res(k);
+end loop;
+--zero igual a NOR negar z
+bandera(1)<= not z;--zero
+end process;
+
+end Behavioral;
