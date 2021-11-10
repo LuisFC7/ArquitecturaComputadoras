@@ -1,0 +1,85 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity testALU4bits is
+end testALU4bits;
+
+architecture Behavioral of testALU4bits is
+component ALU4bits is
+    Port ( a : in STD_LOGIC_VECTOR (3 downto 0);
+           b : in STD_LOGIC_VECTOR (3 downto 0);
+           Aluop : in STD_LOGIC_VECTOR (3 downto 0);
+           Res : inout STD_LOGIC_VECTOR (3 downto 0);
+           bandera : out STD_LOGIC_VECTOR(3 downto 0);
+           Cout : out STD_LOGIC
+        );
+end component;
+
+
+signal a : STD_LOGIC_VECTOR (3 downto 0);
+signal b : STD_LOGIC_VECTOR (3 downto 0);
+signal Aluop : STD_LOGIC_VECTOR (3 downto 0);
+signal Res : STD_LOGIC_VECTOR (3 downto 0);
+signal bandera : STD_LOGIC_VECTOR(3 downto 0);
+signal Cout : STD_LOGIC;
+
+begin
+--mapear
+
+ALUFULL: ALU4bits 
+    Port map ( a =>a, 
+           b =>b,
+           Aluop =>Aluop,
+           Res =>Res,
+           bandera =>bandera,
+           Cout =>Cout
+        );
+
+process 
+begin
+--stimulators
+    a<="0101";
+    b<="1110";
+    Aluop<="0011";
+    wait for 20ns;
+    
+    Aluop<="0111";
+    wait for 20ns;
+    
+    Aluop<="0000";
+    wait for 20ns;
+    
+    Aluop<="1101";
+    wait for 20ns;
+    
+    Aluop<="0001";
+    wait for 20ns;
+    
+    Aluop<="1100";
+    wait for 20ns;
+    
+    Aluop<="0010";
+    wait for 20ns;
+    
+    Aluop<="1010";
+    wait for 20ns;
+    
+    ------
+    a<="0101";
+    b<="0111";
+    Aluop<="0011";
+    wait for 20ns;
+    
+    ---
+    a<="0101";
+    b<="0101";
+    Aluop<="0111";
+    wait for 20ns;
+    
+    Aluop<="1101";
+    wait for 20ns;
+    
+    wait;
+end process;
+
+end Behavioral;
