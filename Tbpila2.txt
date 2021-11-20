@@ -1,0 +1,106 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_arith.all;
+use IEEE.STD_LOGIC_unsigned.ALL;
+use IEEE.STD_LOGIC_TEXTIO.ALL;
+use STD.TEXTIO.ALL;
+
+entity Tbpila is
+end Tbpila;
+
+architecture Behavioral of Tbpila is
+    component PilaH is
+        Port ( pcIn : in STD_LOGIC_VECTOR (15 downto 0);
+               wPC,clk, clr, UP, DW : in STD_LOGIC;
+               pcOut : out STD_LOGIC_VECTOR (15 downto 0);
+               stackP : out STD_LOGIC_VECTOR (2 downto 0));
+    end component;
+    
+--signals
+    signal pcIn : STD_LOGIC_VECTOR (15 downto 0) := (others => '0');
+    signal clk: STD_LOGIC;
+signal wPC: STD_LOGIC;
+signal clr: STD_LOGIC;
+signal UP: STD_LOGIC;
+signal DW: STD_LOGIC;
+    signal pcOut : STD_LOGIC_VECTOR (15 downto 0);
+    signal stackP : STD_LOGIC_VECTOR (2 downto 0);
+begin
+    TestPila: PilaH 
+	Port map ( 
+        pcIn => pcIn,
+        clk => clk,
+        clr => clr,
+        wPC => wPC,
+        UP => UP,
+        DW => DW,
+        pcOut => pcOut,
+        stackP => stackP
+    );
+    
+    clock : process begin
+        clk <= '0';
+        wait for 5 ns;
+        clk <= '1';
+        wait for 5 ns;
+    end process;
+
+    process--ver si lleva nombre
+        file RES : TEXT;										
+        variable L_RE : line;
+        variable vpcOut : STD_LOGIC_VECTOR (15 downto 0);
+        
+        file STIMU : TEXT; 
+        variable L_E: line;
+        variable vpcIn : STD_LOGIC_VECTOR (15 downto 0);
+	variable vwPC : STD_LOGIC;
+        variable vclr : STD_LOGIC;
+        variable vUP : STD_LOGIC;
+        variable vDW : STD_LOGIC;
+
+        variable CADENA : STRING (1 to 2);
+    begin
+
+        file_open(STIMU, "C:\Users\Luis FC\Documents\Semestre 21-2\Arquitectura de Computadoras\Pila\ESTIMULOS.TXT", READ_MODE);
+        file_open(RES, "C:\Users\Luis FC\Documents\Semestre 21-2\Arquitectura de Computadoras\Pila\RESULTADO.TXT", WRITE_MODE);	
+        
+        CADENA := "SP";
+        write(linea_res, CADENA, right, CADENA'LENGTH+1);
+        CADENA := "PC";
+        write(linea_res, CADENA, right, CADENA'LENGTH+1);
+        
+        writeline(RES, L_RE);
+
+        for i in 1 to 24 loop
+            readline(STIMU, L_E); 
+            
+            Hread(L_E, vpcIn);
+            PCin <= vpcIn;
+            
+            read(L_E, vclr);
+            clr <= vclr;
+            
+            read(L_E, vwPC);
+            wPC <= vwPC;
+            
+            read(L_E, vUP);
+            UP <= vUP;
+            
+            read(L_E, vDW);
+            DW <= vDW;
+             
+            wait until rising_edge(clk);
+            wait for 0.1 ns;
+            vpcOut := pcOut;
+            
+            --- SP PC
+            Hwrite(L_RE, stackP, right, 3);
+            Hwrite(L_RE, vpcOut, right, 5);
+            
+            writeline(RES, L_RE);-- escribe la linea en el archivo
+        end loop;
+        file_close(STIMU);  
+        file_close(RES); 
+        wait;
+    end process;
+end Behavioral;

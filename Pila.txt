@@ -1,0 +1,57 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+entity PilaH is
+	generic(m: integer:=3;--con 3 bits se llega hasta el 111->7 binario
+		n: integer:=16);
+	Port(pcIn: in STD_LOGIC_VECTOR(n-1 downto 0);
+		wPC,clk,clr,UP,DW: in STD_LOGIC;
+		pcOut: out STD_LOGIC_VECTOR(n-1 downto 0);
+		stackP: out STD_LOGIC_VECTOR(m-1 downto 0));
+end PilaH;
+--considerar stack como salida igual
+
+architecture Behavioral of PilaH is 
+type contadores is array(0 to 7)of std_logic_vector(n-1 downto 0);
+signal contador: contadores;
+--contadores de 8 PC cada uno
+begin
+	process(clk,clr,contador)
+		variable aux: integer range 0 to (2**n)-1;--aux para stack pointer 0 a 7
+		
+	begin
+		
+		if(clr='1')then
+			aux:=0;
+			contador<=(others=>(others=>'0'));
+		elsif(rising_edge(clk))then
+			if(wPC='0' and UP='0' and DW='0')then
+				contador(aux)<=contador(aux)+1;--checar sintaxis
+			elsif(wPC='1' and UP='0' and DW='0')then
+				contador(aux)<=pcIn;
+			elsif(wPC='1' and UP='1' and DW='0')then
+				aux:=aux+1;
+				if(aux=2**n)then
+					aux:=0;
+				end if;
+				contador(aux)<=pcIn;
+				
+			elsif(wPC='0' and UP='0' and DW='1')then
+				aux:=aux-1;
+				if(aux=-1)then
+					aux:=(2**n)-1;
+				end if;
+				contador(aux)<=pcIn;
+
+			end if;
+		end if;
+	
+		pcOut<=contador(aux);
+		stackP<=conv_std_logic_vector(aux,m);
+		
+	end process;
+end Behavioral;
+
+
