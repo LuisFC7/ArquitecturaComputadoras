@@ -1,2 +1,2 @@
 # Pila Hardware
-  Implementación de la Practica
+ - Implementación de la Practica
