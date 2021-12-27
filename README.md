@@ -15,6 +15,7 @@
     
 > - Semestre 2021 - 2, Agosto -  Septiembre.
 > - Profesora: Nayeli Vega García.
+> - Ultima actualización 26/12/2021  20:44 Hrs.
     
     
 ![ESCOMIPS](https://user-images.githubusercontent.com/55300309/147428656-b461f653-921a-41a9-b62f-884717006e23.jpg)
