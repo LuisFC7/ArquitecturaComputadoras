@@ -18,3 +18,10 @@
     
     
 ![ESCOMIPS](https://user-images.githubusercontent.com/55300309/147428656-b461f653-921a-41a9-b62f-884717006e23.jpg)
+*Procesador ESCOMips.*
+
+
+![escom](https://user-images.githubusercontent.com/55300309/147428895-d6643983-342d-420e-96d9-e776cd16d62b.jpg)
+
+        For any question or doubt about this repository you can contact me through 
+        accounts, they are on my profile:) GOOD LUCK..
