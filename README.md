@@ -13,7 +13,7 @@
     proyecto final, revisar el reporte de práctica en PDF alli se encuentra
     la versión original del código y simulación Test Bench.
     
-> - Semestre 2021 - 2, Agosto -  Septiembre.
+> - Semestre 2021 - 2, Agosto - Diciembre.
 > - Profesora: Nayeli Vega García.
 > - Ultima actualización 26/12/2021  20:44 Hrs.
     
